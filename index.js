@@ -22,12 +22,30 @@ function main() {
 
   axios(config)
   .then(function (response) {
-    const nombres_movimientos = response.data.moves.map(move => {
+    const nombres_movimientos = response.data.moves.map(move => { // ESTO ES EQUIVALENTE AL .map de más abajo, solo que más largo.
       return { name: move.move.name, url: move.move.url }
     })
 
+    // const fetch_promesas = nombres_movimientos.map(move => new Promise((resolve, reject) => {} ));
+    const fetch_promesas = nombres_movimientos.map(move => axios({ method: 'get', url: move.url, headers: { } }))
+
+    console.log("====================================")
+    console.log("====================================")
+    console.log("====================================")
+    console.log("====================================")
+
+    Promise.all(fetch_promesas).then(values => {
+      // const data_display = values.map(move => { return {name: move.data.name, names: move.data.names} })
+      const data_display = values.map(move => ( {name: move.data.name, names: move.data.names} )) // ESTO ES EQUIVALENTE AL .map de arriba, solo que sin el return, va con paréntesis. OJO:::: ESTA SINTESIS BORRANDO EL RETURN solo sirve para funciones cuyo cuerpo TIENE UNA LINEA DE CODIGO.
+
+      console.log(data_display)
+      // console.log(values[0].data)
+      // const 
+      // console.log("XXXXXXXXXXXXXXXXXXXXXXX+++++++++++++++++++===============", values)
+    })
+
     // Evenly, it's possible to use .catch
-    Promise.all(nombres_movimientos).then(values => {
+    // Promise.all(nombres_movimientos).then(values => {
       /*
       const c = {
         method: 'get',
@@ -42,10 +60,10 @@ function main() {
       */
 
       // console.log(typeof(values));
-      console.log("values: ", values);
-    }).catch(reason => {
-      console.log(reason)
-    });
+    //   console.log("values: ", values);
+    //} ).catch(reason => {
+    //   console.log(reason)
+   //  });
     // console.log(nombres_movimientos);
   })
   .catch(function (error) {
@@ -61,9 +79,7 @@ function prueba() {
       return resolve("one")
     }, 1000);
   });
-  const p2 = new Promise((resolve, reject) => {
-    setTimeout(() => resolve("two"), 2000);
-  });
+  const p2 = new Promise((resolve, reject) => { setTimeout(() => resolve("two"), 2000); });
   const p3 = new Promise((resolve, reject) => {
     setTimeout(() => resolve("three"), 3000);
   });
@@ -86,6 +102,6 @@ function prueba() {
   // Logs:
 }
 
-prueba()
-// main()
+// prueba()
+main()
 
