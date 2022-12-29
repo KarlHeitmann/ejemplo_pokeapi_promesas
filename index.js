@@ -8,8 +8,45 @@ console.log("Hola mundo")
 // 3. reduce: Toma un arreglo => lo lleva a un ESCALAR.
 // con reduce, calcular la suma de todos los elementos del arreglo.
 
+function get_move_data(values) {
+  const data_display = values.map(move => ( {name: move.data.name, names: move.data.names} ))
+  console.log(data_display)
+}
 
-function main() {
+function get_all_moves(response) {
+  const nombres_movimientos = response.data.moves.map(move => { // ESTO ES EQUIVALENTE AL .map de más abajo, solo que más largo.
+    return { name: move.move.name, url: move.move.url }
+  })
+
+  // const fetch_promesas = nombres_movimientos.map(move => new Promise((resolve, reject) => {} ));
+  const fetch_promesas = nombres_movimientos.map(move => axios({ method: 'get', url: move.url, headers: { } }))
+
+  // Promise.all(fetch_promesas).then(get_move_data) // Esto es equivalente al de abajo. ¿pero cual es mas claro?
+  Promise.all(fetch_promesas).then(values => {
+    const data_display = values.map(move => ( {name: move.data.name, names: move.data.names} ))
+    console.log(data_display)
+  })
+}
+
+function main_llamando_callback() {
+  const config = {
+    method: 'get',
+    url: 'https://pokeapi.co/api/v2/pokemon/pikachu',
+    headers: { }
+  };
+
+  axios(config)
+  .then(get_all_moves)
+  .catch(function (error) {
+    console.log(error);
+  });
+
+}
+
+
+
+
+function main_anonimo() {
   const config = {
     method: 'get',
     url: 'https://pokeapi.co/api/v2/pokemon/pikachu',
@@ -56,6 +93,7 @@ async function main_async() {
     console.log(data_complete_move.data.name)
   }
 }
-main_async()
-// main()
+// main_async()
+// main_anonimo()
+main_llamando_callback()
 
