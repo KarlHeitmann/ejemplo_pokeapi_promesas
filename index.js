@@ -17,7 +17,7 @@ function main() {
   };
 
   axios(config)
-  .then(function (response) {
+  .then(function (response) { // TODO tarea refactorizar
     const nombres_movimientos = response.data.moves.map(move => { // ESTO ES EQUIVALENTE AL .map de más abajo, solo que más largo.
       return { name: move.move.name, url: move.move.url }
     })
@@ -38,5 +38,24 @@ function main() {
 
 }
 
-main()
+async function main_async() {
+  const config = {
+    method: 'get',
+    url: 'https://pokeapi.co/api/v2/pokemon/pikachu',
+    headers: { }
+  };
+
+  const response = await axios(config)
+  const nombres_movimientos = response.data.moves.map(move => { // ESTO ES EQUIVALENTE AL .map de más abajo, solo que más largo.
+    return { name: move.move.name, url: move.move.url }
+  })
+
+  for(let i=0; i< nombres_movimientos.length; i++) {
+    const move = nombres_movimientos[i];
+    const data_complete_move = await axios.get(move.url)
+    console.log(data_complete_move.data.name)
+  }
+}
+main_async()
+// main()
 
